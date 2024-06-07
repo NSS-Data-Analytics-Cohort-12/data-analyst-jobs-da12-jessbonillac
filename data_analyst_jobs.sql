@@ -1,5 +1,5 @@
 -- 1.	How many rows are in the data_analyst_jobs table?
-SELECT * 
+SELECT COUNT(*) 
 FROM data_analyst_jobs;
 
 1793
@@ -29,12 +29,13 @@ FROM data_analyst_jobs
 
 -- 4.	How many postings in Tennessee have a star rating above 4?
 
-SELECT location, star_rating
+SELECT location, COUNT(star_rating)
 FROM data_analyst_jobs
 	WHERE location = 'TN'
-	AND star_rating >= 4; 
+	AND star_rating > 4
+	GROUP BY(location);
 
-4 ratings above 4 
+3 ratings above 4 
 
 -- 5.	How many postings in the dataset have a review count between 500 and 1000?
 
@@ -71,18 +72,25 @@ FROM data_analyst_jobs
 230 unique job titles are there for California companies
 
 -- 9.	Find the name of each company and its average star rating for all companies that have more than 5000 reviews across all locations. How many companies are there with more that 5000 reviews across all locations?
---WORKING ON 
-SELECT company, AVG(star_rating)
+
+SELECT company, 
+	AVG(star_rating) AS avg_star_rating
 FROM data_analyst_jobs 
-	GROUP BY company
-	HAVING review_count >5000
+GROUP BY company
+HAVING SUM(review_count) > 5000;
 	
 
 -- 10.	Add the code to order the query in #9 from highest to lowest average star rating. Which company with more than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
 
+SELECT company, 
+	AVG(star_rating) AS avg_star_rating
+FROM data_analyst_jobs 
+GROUP BY company
+HAVING SUM(review_count) > 5000
+ORDER BY (avg_star_rating) DESC;
 
-
-
+Google 4.30
+	
 -- 11.	Find all the job titles that contain the word ‘Analyst’. How many different job titles are there? 
 SELECT COUNT(title)
 FROM data_analyst_jobs 
@@ -94,6 +102,20 @@ WHERE title LIKE '%Analyst%'
 
 SELECT title
 FROM data_analyst_jobs
-WHERE title NOT LIKE '%Analyst%'
-	AND title NOT LIKE '%Anlaytics%';
+WHERE title NOT ILIKE '%Analyst%'
+	AND title NOT ILIKE '%Analytics%';
 
+--BONUS----------------------------------------------
+
+SELECT title, skill, days_since_posting, domain
+FROM data_analyst_jobs 
+WHERE skill LIKE 'SQL'
+AND days_since_posting > (3*7)
+ORDER BY domain DESC
+
+"Transport and Freight"
+"Real Estate"
+"Internet and Software"
+"Consumer Goods and Services"
+
+ALL 4 
